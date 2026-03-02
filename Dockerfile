@@ -10,13 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg rsync openssh-client python3 python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN BLENDER_VERSION=$(curl -s https://download.blender.org/release/Blender${BLENDER_MAJOR}/ | \
-    grep -oP 'blender-\K[0-9]+\.[0-9]+\.[0-9]+(?=-linux-x64.tar.xz)' | \
-    sort -V | tail -1) && \
-    wget https://download.blender.org/release/Blender${BLENDER_MAJOR}/blender-${BLENDER_VERSION}-linux-x64.tar.xz && \
-    tar -xf blender-${BLENDER_VERSION}-linux-x64.tar.xz && \
-    mv blender-${BLENDER_VERSION}-linux-x64 /opt/blender && \
-    ln -s /opt/blender/blender /usr/local/bin/blender && \
+RUN set -eux; \
+    BLENDER_PAGE=$(curl -s https://download.blender.org/release/Blender${BLENDER_MAJOR}/); \
+    BLENDER_VERSION=$(echo "$BLENDER_PAGE" | \
+        grep -o 'blender-[0-9]\+\.[0-9]\+\.[0-9]\+-linux-x64.tar.xz' | \
+        sed 's/blender-\(.*\)-linux-x64.tar.xz/\1/' | \
+        sort -V | tail -1); \
+    echo "Latest Blender version: $BLENDER_VERSION"; \
+    wget https://download.blender.org/release/Blender${BLENDER_MAJOR}/blender-${BLENDER_VERSION}-linux-x64.tar.xz; \
+    tar -xf blender-${BLENDER_VERSION}-linux-x64.tar.xz; \
+    mv blender-${BLENDER_VERSION}-linux-x64 /opt/blender; \
+    ln -s /opt/blender/blender /usr/local/bin/blender; \
     rm blender-${BLENDER_VERSION}-linux-x64.tar.xz
 
 WORKDIR /workspace
