@@ -3,7 +3,7 @@ FROM nvidia/cuda:12.4.1-runtime-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget curl ca-certificates \
+    wget curl ca-certificates \ xz-utils \
     libgl1 libx11-6 libxi6 libxxf86vm1 libxfixes3 libxrender1 \
     libglib2.0-0 libsm6 libxext6 libxrandr2 libxcb1 libxkbcommon0 libdbus-1-3 \
     ffmpeg rsync openssh-client python3 python3-pip \
