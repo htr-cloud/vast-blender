@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xz-utils \
     libgl1 libx11-6 libxi6 libxxf86vm1 libxfixes3 libxrender1 \
     libglib2.0-0 libsm6 libxext6 libxrandr2 libxcb1 libxkbcommon0 libdbus-1-3 \
-    ffmpeg rsync openssh-client python3 python3-pip \
+    ffmpeg rsync openssh-client python3 python3-pip htop nvtop\
     && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
