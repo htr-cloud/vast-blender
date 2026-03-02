@@ -1,7 +1,6 @@
 FROM nvidia/cuda:12.4.1-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV BLENDER_MAJOR=5.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget curl ca-certificates \
@@ -11,13 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
-    BLENDER_PAGE=$(curl -s https://download.blender.org/release/Blender${BLENDER_MAJOR}/); \
-    BLENDER_VERSION=$(echo "$BLENDER_PAGE" | \
+    BASE_URL="https://download.blender.org/release/"; \
+    MAJOR_DIR=$(curl -s $BASE_URL | \
+        grep -o 'Blender5\.[0-9]\+/' | \
+        sort -V | tail -1); \
+    echo "Using major dir: $MAJOR_DIR"; \
+    BLENDER_VERSION=$(curl -s ${BASE_URL}${MAJOR_DIR} | \
         grep -o 'blender-[0-9]\+\.[0-9]\+\.[0-9]\+-linux-x64.tar.xz' | \
         sed 's/blender-\(.*\)-linux-x64.tar.xz/\1/' | \
         sort -V | tail -1); \
     echo "Latest Blender version: $BLENDER_VERSION"; \
-    wget https://download.blender.org/release/Blender${BLENDER_MAJOR}/blender-${BLENDER_VERSION}-linux-x64.tar.xz; \
+    wget ${BASE_URL}${MAJOR_DIR}blender-${BLENDER_VERSION}-linux-x64.tar.xz; \
     tar -xf blender-${BLENDER_VERSION}-linux-x64.tar.xz; \
     mv blender-${BLENDER_VERSION}-linux-x64 /opt/blender; \
     ln -s /opt/blender/blender /usr/local/bin/blender; \
